@@ -1,0 +1,63 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    session:
+      cookie:
+        domain: localhost
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/head?characterEncoding=utf8&useSSL=false
+    username: root
+    password: 932384
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  session:
+    timeout: 86400 # 失效时间：分钟
+    store-type: redis # 修改 session 存储的位置
+  # redis 配置
+  redis:
+    port: 6379
+    host: 127.0.0.1
+    database: 3
+
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-field: is_delete  # 逻辑删除的实体字段
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true  # 自动转驼峰
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:/mapper/**Mapper.xml
+
+
+logging:
+  file:
+    name: /logger/spring-UserCenter.log
+
+
+knife4j:
+  enable: true
+  openapi:
+    title: 伙伴匹配系统接口文档
+    description: 接口文档
+    email: headhead@petalmail.com
+    concat: 饼卷馒头
+    url: https://docs.xiaominfo.com
+    version: v4.0
+    license: Apache 2.0
+    license-url: https://stackoverflow.com/
+    terms-of-service-url: https://stackoverflow.com/
+    group:
+      test1:
+        group-name: head
+        api-rule: package
+        api-rule-resources:
+          - com.head.friendsystem.controller
