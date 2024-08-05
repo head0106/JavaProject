@@ -1,6 +1,5 @@
 package com.head.friendsystem.model.vo;
 
-
 import lombok.Data;
 
 import java.util.Date;

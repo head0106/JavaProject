@@ -93,7 +93,7 @@ public class UserController {
     // 查询所有用户信息
     @GetMapping("/search")
     public BaseResponse<List<User>> userSearch(String userName, HttpServletRequest request){
-        if(!isAdmin(request)){
+        if(!userService.isAdmin(request)){
             throw new BusinessException(ErrorCode.NO_AUTH,"缺少管理员权限");
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -142,7 +142,7 @@ public class UserController {
 
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
-        if (!isAdmin(request)) {
+        if (!userService.isAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
         if (id <= 0) {
@@ -165,7 +165,7 @@ public class UserController {
         User loginUser = (User) userObj; // 此时 loginUser 不可能为空
         // user 是要修改的用户，loginUser 是登录用户
         // 如果登录用户既不是管理员也不是要修改信息的本人，那么无权限
-        if(!isAdmin(request) && !Objects.equals(loginUser.getId(), user.getId())){
+        if(!userService.isAdmin(request) && !Objects.equals(loginUser.getId(), user.getId())){
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
 
@@ -175,11 +175,6 @@ public class UserController {
     }
 
 
-    private boolean isAdmin(HttpServletRequest request){
-        //
-         Object userObj = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
-         User user = (User) userObj;
-         return user != null && Objects.equals(user.getUserRole(), UserConstant.ADMIN_ROLE);
-    }
+
 
 }

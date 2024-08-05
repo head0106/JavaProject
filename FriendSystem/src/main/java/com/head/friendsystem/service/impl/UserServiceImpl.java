@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.head.friendsystem.common.ErrorCode;
+import com.head.friendsystem.constant.UserConstant;
 import com.head.friendsystem.exception.BusinessException;
 import com.head.friendsystem.model.domain.User;
 import com.head.friendsystem.service.UserService;
 import com.head.friendsystem.mapper.UserMapper;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -130,7 +130,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User safetyUser = getSafetyUser(user);
         // 4.记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE,safetyUser);
-        System.out.println(request.getSession());
+        System.out.println("输出的 Session:" + request.getSession());
         return safetyUser;
     }
 
@@ -227,6 +227,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         }
         return null;
+    }
+
+    @Override
+    public boolean isAdmin(HttpServletRequest request){
+        //
+        Object userObj = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+        User user = (User) userObj;
+        return user != null && Objects.equals(user.getUserRole(), UserConstant.ADMIN_ROLE);
+    }
+    @Override
+    public boolean isAdmin(User user){
+        return user != null && Objects.equals(user.getUserRole(), UserConstant.ADMIN_ROLE);
     }
 
     @Override

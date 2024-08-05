@@ -5,10 +5,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.head.friendsystem.model.domain.Team;
 import com.head.friendsystem.model.domain.User;
 import com.head.friendsystem.model.dto.TeamQuery;
+import com.head.friendsystem.model.request.TeamJoinRequest;
+import com.head.friendsystem.model.request.TeamQuitRequest;
+import com.head.friendsystem.model.request.TeamUpdateRequest;
 import com.head.friendsystem.model.vo.TeamUserVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -32,5 +36,19 @@ public interface TeamService extends IService<Team> {
      * @param teamQuery
      * @return
      */
-    List<TeamUserVO> listTeams(TeamQuery teamQuery);
+    List<TeamUserVO> listTeams(TeamQuery teamQuery, boolean isAdmin);
+
+    boolean updateTeam(TeamUpdateRequest teamUpdateRequest, User loginUser);
+
+    boolean joinTeam(TeamJoinRequest teamJoinRequest, User loginUser);
+
+    boolean quitTeam(TeamQuitRequest teamQuitRequest, User loginUser);
+
+    /**
+     * 删除(解散)队伍
+     * @param id 队伍ID
+     * @return 是否成功
+     */
+    boolean deleteTeam(long id, User loginUser);
+
 }

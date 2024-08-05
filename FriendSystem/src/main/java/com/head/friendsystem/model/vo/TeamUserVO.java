@@ -16,7 +16,6 @@ public class TeamUserVO {
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

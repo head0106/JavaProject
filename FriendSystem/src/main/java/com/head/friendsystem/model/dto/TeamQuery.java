@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import java.util.Date;
 
 /**
- * 队伍查询封装类
+ * 队伍查询信息封装类
  */
 
 @EqualsAndHashCode(callSuper = true)
@@ -21,7 +21,10 @@ public class TeamQuery extends PageRequest {
      * id
      */
     private Long id;
-
+    /**
+     * 搜索关键词(同时对 name 和 description 进行搜索)
+     */
+    private String searchText;
     /**
      * 队伍名称
      */

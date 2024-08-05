@@ -13,6 +13,9 @@ import com.head.friendsystem.model.domain.Team;
 import com.head.friendsystem.model.domain.User;
 import com.head.friendsystem.model.dto.TeamQuery;
 import com.head.friendsystem.model.request.TeamAddRequest;
+import com.head.friendsystem.model.request.TeamJoinRequest;
+import com.head.friendsystem.model.request.TeamQuitRequest;
+import com.head.friendsystem.model.request.TeamUpdateRequest;
 import com.head.friendsystem.model.vo.TeamUserVO;
 import com.head.friendsystem.service.TeamService;
 import com.head.friendsystem.service.UserService;
@@ -56,11 +59,12 @@ public class TeamController {
     }
 
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteTeam(@RequestBody long id){
+    public BaseResponse<Boolean> deleteTeam(@RequestBody long id, HttpServletRequest request){
         if(id <= 0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean result = teamService.removeById(id);
+        User loginUser = userService.getLoginUser(request);
+        boolean result = teamService.deleteTeam(id, loginUser);
         if(!result){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"删除队伍失败");
         }
@@ -68,11 +72,15 @@ public class TeamController {
     }
 
     @PostMapping("/update")
-    public BaseResponse<Boolean> updateTeam(@RequestBody Team team){
-        if(team == null){
+    public BaseResponse<Boolean> updateTeam(@RequestBody TeamUpdateRequest teamUpdateRequest, HttpServletRequest request){
+        if(teamUpdateRequest == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean result = teamService.updateById(team);
+        User loginUser = userService.getLoginUser(request);
+        if(loginUser == null){
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
+        }
+        boolean result = teamService.updateTeam(teamUpdateRequest, loginUser);
         if(!result){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"更新队伍失败");
         }
@@ -92,11 +100,12 @@ public class TeamController {
     }
 
     @GetMapping("/list")
-    public BaseResponse<List<TeamUserVO>> listTeams(TeamQuery teamQuery){
+    public BaseResponse<List<TeamUserVO>> listTeams(TeamQuery teamQuery, HttpServletRequest request){
         if(teamQuery == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        List<TeamUserVO> teamList = teamService.listTeams(teamQuery);
+        boolean isAdmin = userService.isAdmin(request);
+        List<TeamUserVO> teamList = teamService.listTeams(teamQuery, isAdmin);
 
         return ResultUtils.success(teamList);
     }
@@ -113,6 +122,32 @@ public class TeamController {
         QueryWrapper<Team> queryWrapper = new QueryWrapper<>(team);
         Page<Team> resultPage = teamService.page(page, queryWrapper);
         return ResultUtils.success(resultPage);
+    }
+
+    @PostMapping("/join")
+    public BaseResponse<Boolean> joinTeam(@RequestBody TeamJoinRequest teamJoinRequest, HttpServletRequest request){
+        if(teamJoinRequest == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        if(loginUser == null){
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
+        }
+        boolean result = teamService.joinTeam(teamJoinRequest, loginUser);
+        return ResultUtils.success(result);
+    }
+
+    @PostMapping("/quit")
+    public BaseResponse<Boolean> quitTeam(@RequestBody TeamQuitRequest teamQuitRequest, HttpServletRequest request){
+        if(teamQuitRequest == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        if(loginUser == null){
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
+        }
+        boolean result = teamService.quitTeam(teamQuitRequest, loginUser);
+        return ResultUtils.success(result);
     }
 
 }
