@@ -24,6 +24,7 @@ spring:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       logic-delete-field: is_delete  # 逻辑删除的实体字段
@@ -31,11 +32,11 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 
-mybatis:
-  configuration:
-    map-underscore-to-camel-case: true  # 自动转驼峰
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath:/mapper/**Mapper.xml
+#mybatis:
+#  configuration:
+#    map-underscore-to-camel-case: true  # 自动转驼峰
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  mapper-locations: classpath:/mapper/**Mapper.xml
 
 
 logging:
