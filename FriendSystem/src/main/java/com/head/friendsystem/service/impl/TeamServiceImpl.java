@@ -1,6 +1,7 @@
 package com.head.friendsystem.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.head.friendsystem.common.ErrorCode;
 import com.head.friendsystem.exception.BusinessException;
@@ -19,12 +20,10 @@ import com.head.friendsystem.model.vo.UserVO;
 import com.head.friendsystem.service.TeamService;
 import com.head.friendsystem.service.UserService;
 import com.head.friendsystem.service.UserTeamService;
-import io.swagger.models.auth.In;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -126,6 +125,10 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
             Long id = teamQuery.getId();
             if(id != null){
                 queryWrapper.eq("id", id);
+            }
+            List<Long> idList = teamQuery.getIdList();
+            if(CollectionUtils.isNotEmpty(idList)){
+                queryWrapper.in("id",idList);
             }
             String searchText = teamQuery.getSearchText();
             if(StringUtils.isNotBlank(searchText)){
